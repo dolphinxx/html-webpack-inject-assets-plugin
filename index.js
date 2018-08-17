@@ -11,20 +11,28 @@ HtmlWebpackInjectAssetsPlugin.prototype.apply = function(compiler) {
         compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync('HtmlWebpackInjectAssetsPlugin', (data, cb) => {
             if(data.html) {
                 const jsSlot = data.html.indexOf(this.options.jsPlaceholder);
-                if(jsSlot !== -1 && data.assets.js.length > 0) {
-                    let jsAssets = '';
-                    for(let asset of data.assets.js) {
-                        jsAssets += `<script src="${asset.path}" type="application/javascript"></script>`;
+                if(jsSlot !== -1) {
+                    if(data.assets.js.length > 0) {
+                        let jsAssets = '';
+                        for(let asset of data.assets.js) {
+                            jsAssets += `<script src="${asset.path}" type="application/javascript"></script>`;
+                        }
+                        data.html = data.html.substring(0, jsSlot) + jsAssets + data.html.substring(jsSlot + this.options.jsPlaceholder.length);
+                    } else {
+                        data.html = data.html.substring(0, jsSlot) + data.html.substring(jsSlot + this.options.jsPlaceholder.length);
                     }
-                    data.html = data.html.substring(0, jsSlot) + jsAssets + data.html.substring(jsSlot + this.options.jsPlaceholder.length);
                 }
                 const cssSlot = data.html.indexOf(this.options.cssPlaceholder);
-                if(cssSlot !== -1 && data.assets.css.length > 0) {
-                    let cssAssets = '';
-                    for(let asset of data.assets.css) {
-                        cssAssets += `<link href="${asset.path}" type="text/css" rel="stylesheet">`;
+                if(cssSlot !== -1) {
+                    if(data.assets.css.length > 0) {
+                        let cssAssets = '';
+                        for(let asset of data.assets.css) {
+                            cssAssets += `<link href="${asset.path}" type="text/css" rel="stylesheet">`;
+                        }
+                        data.html = data.html.substring(0, cssSlot) + cssAssets + data.html.substring(cssSlot + this.options.cssPlaceholder.length);
+                    } else {
+                        data.html = data.html.substring(0, cssSlot) + data.html.substring(cssSlot + this.options.cssPlaceholder.length);
                     }
-                    data.html = data.html.substring(0, cssSlot) + cssAssets + data.html.substring(cssSlot + this.options.cssPlaceholder.length);
                 }
             }
             cb(null, data);
