@@ -8,7 +8,6 @@ function HtmlWebpackInjectAssetsPlugin(options = {}) {
 
 HtmlWebpackInjectAssetsPlugin.prototype.apply = function(compiler) {
     compiler.hooks.compilation.tap('HtmlWebpackInjectAssetsPlugin', compilation => {
-        console.log('The compiler is starting a new compilation...');
         compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync('HtmlWebpackInjectAssetsPlugin', (data, cb) => {
             if(data.html) {
                 const jsSlot = data.html.indexOf(this.options.jsPlaceholder);
